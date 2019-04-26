@@ -24,7 +24,15 @@
             )
     @endcomponent
 
-
+    <form method="get" action="{{ route('books.search') }}">
+        <label>Sort by:</label>
+        <select>
+            <option>Title A-Z</option>
+            <option>Title Z-A</option>
+            <option>Author A-Z</option>
+            <option>Author Z-A</option>
+        </select>
+    </form>
 
     <table>
         <tr>
@@ -58,5 +66,7 @@
             </tr>
         @endforeach
     </table>
+
     {{ $books->links()  }}
+
 @endsection

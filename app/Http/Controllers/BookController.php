@@ -111,15 +111,18 @@ class BookController extends Controller
      */
     public function search(Request $request)
     {
-        $keyword = $request->get('search');
+        $keyword = $request->get('search') ?? '';
+        $sortBy = $request->get('sort')['by'] ?? '';
+        $sortOrder = $request->get('sort')['order'] ?? '';
 
         $books = new Book();
+
         if ($keyword) {
-            $results = $books->searchByBookOrAuthor($keyword, self::ITEMS_PER_PAGE);
-        } else {
-            $results = $books->paginate(self::ITEMS_PER_PAGE);
+            $results = $books->searchByBookOrAuthor($keyword, self::ITEMS_PER_PAGE, $sortBy, $sortOrder);
+
+            return view('books.index', ['books' => $results]);
         }
 
-        return view('books.index', ['books' => $results]);
+        return $this->index();
     }
 }

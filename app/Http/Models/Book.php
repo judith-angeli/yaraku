@@ -44,18 +44,23 @@ class Book extends Model
 
     /**
      * @param string $keyword
+     * @param string $orderBy
+     * @param string $order
      * @param int $pages
      *
      * @return Illuminate\Database\Eloquent\Collection $results
     * */
-    public function searchByBookOrAuthor(string $keyword = '', int $pages = 10)
+    public function searchByBookOrAuthor(string $keyword = '', int $pages = 10, string $orderBy = 'title', string $order= 'ASC')
     {
         $regexpKeyword = str_replace(' ', '|', $keyword);
 
-        $results = $this->whereHas('authors', function($query) use ($keyword, $regexpKeyword) {
+        $results = $this->whereHas('authors', function($query) use ($regexpKeyword) {
                         $query->where('forename', 'REGEXP', $regexpKeyword)
                             ->orWhere('surname', 'REGEXP', $regexpKeyword);
-                    })->orWhere('title', 'LIKE', '%' . $keyword . '%')->paginate($pages);
+                    })->orWhere('title', 'LIKE', '%' . $keyword . '%')
+            ->orderBy($orderBy, $order)
+            ->paginate($pages);
+
         $results->appends(['search' => $keyword]);
 
         return $results;
