@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
+    const ITEMS_PER_PAGE = 10;
+
     /**
      * Display a listing of the resource.
      *
@@ -16,7 +18,7 @@ class BookController extends Controller
      */
     public function index()
     {
-        $books = Book::all();
+        $books = Book::paginate(self::ITEMS_PER_PAGE);
 
         return view('books.index', ['books' => $books]);
     }
@@ -110,8 +112,13 @@ class BookController extends Controller
     public function search(Request $request)
     {
         $keyword = $request->get('search');
+
         $books = new Book();
-        $results = $books->searchByBookOrAuthor($keyword);
+        if ($keyword) {
+            $results = $books->searchByBookOrAuthor($keyword, self::ITEMS_PER_PAGE);
+        } else {
+            $results = $books->paginate(self::ITEMS_PER_PAGE);
+        }
 
         return view('books.index', ['books' => $results]);
     }

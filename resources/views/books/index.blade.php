@@ -24,6 +24,8 @@
             )
     @endcomponent
 
+
+
     <table>
         <tr>
             <th>Title</th>
@@ -56,5 +58,5 @@
             </tr>
         @endforeach
     </table>
-
+    {{ $books->links()  }}
 @endsection
