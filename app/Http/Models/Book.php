@@ -3,11 +3,13 @@
 namespace App\Http\Models;
 
 use App\Events\BookSaved;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class Book extends Model
 {
     protected $fillable = ['title'];
+    const SORTABLE_FIELDS = ['title', 'forename', 'surname', 'author'];
 
     /**
     * a book can have multiple authors
@@ -44,25 +46,43 @@ class Book extends Model
 
     /**
      * @param string $keyword
-     * @param string $orderBy
-     * @param string $order
-     * @param int $pages
      *
-     * @return Illuminate\Database\Eloquent\Collection $results
+     * @return Illuminate\Database\Eloquent\Builder $results
     * */
-    public function searchByBookOrAuthor(string $keyword = '', int $pages = 10, string $orderBy = 'title', string $order= 'ASC')
+    public function getByBookOrAuthor(string $keyword = '')
     {
-        $regexpKeyword = str_replace(' ', '|', $keyword);
+        $results = $this->join('author_book', 'books.id', '=', 'author_book.book_id')
+                        ->join('authors', 'authors.id', '=', 'author_book.author_id');
 
-        $results = $this->whereHas('authors', function($query) use ($regexpKeyword) {
-                        $query->where('forename', 'REGEXP', $regexpKeyword)
-                            ->orWhere('surname', 'REGEXP', $regexpKeyword);
-                    })->orWhere('title', 'LIKE', '%' . $keyword . '%')
-            ->orderBy($orderBy, $order)
-            ->paginate($pages);
+        if ($keyword) {
+            $regexpKeyword = str_replace(' ', '|', $keyword);
 
-        $results->appends(['search' => $keyword]);
+            $results->where('title', 'LIKE', '%' . $keyword . '%')
+                ->orWhere('forename', 'REGEXP', $regexpKeyword)
+                ->orWhere('surname', 'REGEXP', $regexpKeyword);
+        }
+        $results->select('books.id', 'book_id', 'author_id', 'title', 'forename', 'surname');
 
         return $results;
+    }
+
+    /**
+     * @param Illuminate\Database\Eloquent\Builder $builder
+     * @param string $sortBy
+     * @param string $sortOrder
+     *
+     * @return Illuminate\Database\Eloquent\Builder $results
+     * */
+    public function sort($builder, $sortBy = 'title', $sortOrder = 'ASC')
+    {
+        if (!in_array(strtolower($sortBy), self::SORTABLE_FIELDS)) {
+            $sortBy = 'title';
+        }
+
+        if (!in_array(strtolower($sortOrder), ['asc', 'desc'])) {
+            $sortOrder = 'ASC';
+        }
+
+        return $builder->orderBy($sortBy, $sortOrder);
     }
 }

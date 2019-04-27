@@ -17,22 +17,34 @@
 
     @component('components.search',
                 [
-                    'action' => route('books.search'),
                     'label' => 'Search:',
-                    'placeholder' => 'Search for a book or author'
+                    'placeholder' => 'Search for a book or author',
+                    'sort' => $sort
                 ]
             )
     @endcomponent
+    <a href="/books">Reset</a>
 
-    <form method="get" action="{{ route('books.search') }}">
+    <form method="get" id="form_sort" action="{{ route(Route::currentRouteName()) }}">
+        @if (isset($search))
+            <input type="hidden" name="search" value="{{ $search }}"/>
+        @endif
+
         <label>Sort by:</label>
-        <select>
-            <option>Title A-Z</option>
-            <option>Title Z-A</option>
-            <option>Author A-Z</option>
-            <option>Author Z-A</option>
+
+        <select name="sort" id="sort_by">
+            <option value="title_asc" {{ $sort == 'title_asc' ? 'selected' : '' }}>Title A-Z</option>
+            <option value="title_desc" {{ $sort == 'title_desc' ? 'selected' : '' }}>Title Z-A</option>
+            <option value="forename_asc" {{ $sort == 'forename_asc' ? 'selected' : '' }}>Author A-Z</option>
+            <option value="forename_desc" {{ $sort == 'forename_desc' ? 'selected' : '' }}>Author Z-A</option>
         </select>
     </form>
+
+    <script type="text/javascript">
+        $('#sort_by').change(function () {
+            $("#form_sort").submit();
+        });
+    </script>
 
     <table>
         <tr>
@@ -67,6 +79,6 @@
         @endforeach
     </table>
 
-    {{ $books->links()  }}
+    {{ $books->appends(request()->except('page'))->links() }}
 
 @endsection

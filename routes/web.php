@@ -15,9 +15,5 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('books/search/{search?}', 'BookController@search')
-    ->where('search', '.*')
-    ->name('books.search');
-
 Route::resource('books', 'BookController');
 Route::resource('authors', 'AuthorController');

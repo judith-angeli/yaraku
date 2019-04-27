@@ -14,13 +14,23 @@ class BookController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $books = Book::paginate(self::ITEMS_PER_PAGE);
+        $search = $request->get('search') ?? '';
+        $sort = $request->get('sort') ?? 'title_asc';
 
-        return view('books.index', ['books' => $books]);
+        $books = new Book();
+
+        list($sortBy, $sortOrder) = explode('_', $sort);
+
+        $results = $books->getByBookOrAuthor($search);
+        $results = $books->sort($results, $sortBy, $sortOrder);
+        $results = $results->paginate(self::ITEMS_PER_PAGE);
+
+        return view('books.index', ['books' => $results, 'search' => $search, 'sort' => $sort]);
     }
 
     /**
@@ -102,27 +112,5 @@ class BookController extends Controller
         $book->delete();
 
         return redirect(route('books.index'))->with('success-message', $book->title . ' has been deleted');
-    }
-
-    /**
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function search(Request $request)
-    {
-        $keyword = $request->get('search') ?? '';
-        $sortBy = $request->get('sort')['by'] ?? '';
-        $sortOrder = $request->get('sort')['order'] ?? '';
-
-        $books = new Book();
-
-        if ($keyword) {
-            $results = $books->searchByBookOrAuthor($keyword, self::ITEMS_PER_PAGE, $sortBy, $sortOrder);
-
-            return view('books.index', ['books' => $results]);
-        }
-
-        return $this->index();
     }
 }
