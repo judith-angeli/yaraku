@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\BookSaved;
-use App\Http\Models\Author;
-use App\Http\Models\Book;
+use App\Helpers\Export\ExportFileHelper;
+use App\Models\Book;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
 class BookController extends Controller
@@ -12,7 +12,7 @@ class BookController extends Controller
     const ITEMS_PER_PAGE = 10;
 
     /**
-     * Display a listing of the resource.
+     * Display a listing of books and its authors
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -22,13 +22,8 @@ class BookController extends Controller
         $search = $request->get('search') ?? '';
         $sort = $request->get('sort') ?? 'title_asc';
 
-        $books = new Book();
-
-        list($sortBy, $sortOrder) = explode('_', $sort);
-
-        $results = $books->getByBookOrAuthor($search);
-        $results = $books->sort($results, $sortBy, $sortOrder);
-        $results = $results->paginate(self::ITEMS_PER_PAGE);
+        $results = $this->search($search, $sort)
+                        ->paginate(self::ITEMS_PER_PAGE);
 
         return view('books.index', ['books' => $results, 'search' => $search, 'sort' => $sort]);
     }
@@ -112,5 +107,44 @@ class BookController extends Controller
         $book->delete();
 
         return redirect(route('books.index'))->with('success-message', $book->title . ' has been deleted');
+    }
+
+    /**
+     * @param string $search
+     * @param string $sort
+     *
+     * @return Builder
+    */
+    public function search(string $search, string $sort)
+    {
+        $books = new Book();
+
+        list($sortBy, $sortOrder) = explode('_', $sort);
+
+        $results = $books->getByTitleOrAuthor($search);
+
+        return $books->sort($results, $sortBy, $sortOrder);
+    }
+
+    /**
+     * @param string $toExport = title_author | title | author
+     * @param string $file = csv | xml
+     * @param string $sort
+     * @param string $search
+     *
+     * @return
+    */
+    public function export(string $toExport, string $file, string $sort = 'title_asc', string $search = '')
+    {
+        if (!$file) {
+            return redirect(route('books.index'))->with('error-message', 'No file selected');
+        }
+
+        $dataBuilder = $this->search($search, $sort);
+
+        $exportHelper = new ExportFileHelper($file, $toExport, $dataBuilder, 'books');
+        $exportHelper->export();
+
+        return redirect(route(Route::currentRouteName()));
     }
 }

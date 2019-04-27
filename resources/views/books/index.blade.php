@@ -23,12 +23,11 @@
                 ]
             )
     @endcomponent
+
     <a href="/books">Reset</a>
 
     <form method="get" id="form_sort" action="{{ route(Route::currentRouteName()) }}">
-        @if (isset($search))
-            <input type="hidden" name="search" value="{{ $search }}"/>
-        @endif
+        <input type="hidden" name="search" value="{{ $search }}"/>
 
         <label>Sort by:</label>
 
@@ -40,7 +39,10 @@
         </select>
     </form>
 
+    <a href="{{ route('books.export', ['export' => 'title_author', 'file' => 'csv', 'search' => $search, 'sort' => $sort]) }}">Export to CSV</a>
+
     <script type="text/javascript">
+        // TODO: Move this to external JS file
         $('#sort_by').change(function () {
             $("#form_sort").submit();
         });

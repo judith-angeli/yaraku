@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Models;
+namespace App\Models;
 
 use App\Events\BookSaved;
 use Illuminate\Database\Eloquent\Builder;
@@ -16,7 +16,7 @@ class Book extends Model
     */
     public function authors()
     {
-    	return $this->belongsToMany(Author::class);
+        return $this->belongsToMany(Author::class);
     }
 
     /**
@@ -49,9 +49,10 @@ class Book extends Model
      *
      * @return Illuminate\Database\Eloquent\Builder $results
     * */
-    public function getByBookOrAuthor(string $keyword = '')
+    public function getByTitleOrAuthor(string $keyword = '')
     {
-        $results = $this->join('author_book', 'books.id', '=', 'author_book.book_id')
+        $results = $this->select('books.id', 'book_id', 'author_id', 'title', 'forename', 'surname')
+                        ->join('author_book', 'books.id', '=', 'author_book.book_id')
                         ->join('authors', 'authors.id', '=', 'author_book.author_id');
 
         if ($keyword) {
@@ -61,19 +62,18 @@ class Book extends Model
                 ->orWhere('forename', 'REGEXP', $regexpKeyword)
                 ->orWhere('surname', 'REGEXP', $regexpKeyword);
         }
-        $results->select('books.id', 'book_id', 'author_id', 'title', 'forename', 'surname');
 
         return $results;
     }
 
     /**
-     * @param Illuminate\Database\Eloquent\Builder $builder
+     * @param Builder $builder
      * @param string $sortBy
      * @param string $sortOrder
      *
-     * @return Illuminate\Database\Eloquent\Builder $results
+     * @return Builder $results
      * */
-    public function sort($builder, $sortBy = 'title', $sortOrder = 'ASC')
+    public function sort(Builder $builder, $sortBy = 'title', $sortOrder = 'ASC')
     {
         if (!in_array(strtolower($sortBy), self::SORTABLE_FIELDS)) {
             $sortBy = 'title';
