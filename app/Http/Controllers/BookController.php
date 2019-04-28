@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\BookSaved;
 use App\Helpers\Export\ExportFileHelper;
 use App\Models\Book;
 use Illuminate\Database\Eloquent\Builder;
@@ -52,12 +53,13 @@ class BookController extends Controller
         ]);
 
         $book = new Book();
+        $book->title = $request->get('title');
 
-        if ($book->addBook($request->input())) {
-            return redirect(route('books.index'))->with('success-message', $book->title . ' has been added');
-        } else {
-            return redirect(route('books.index'))->with('error-message', $book->title . ' already exist');
-        }
+        $book->save();
+
+        event(new BookSaved($book, $request->get('forename'), $request->get('surname')));
+
+        return redirect(route('books.index'))->with('success-message', $book->title . ' has been added');
     }
 
     /**
@@ -134,8 +136,13 @@ class BookController extends Controller
      *
      * @return
     */
-    public function export(string $toExport, string $file, string $sort = 'title_asc', string $search = '')
+    public function export(Request $request)
     {
+        $file = $request->get('file') ?? '';
+        $toExport = $request->get('toExport') ?? '';
+        $sort = $request->get('sort') ?? '';
+        $search = $request->get('search') ?? '';
+
         if (!$file) {
             return redirect(route('books.index'))->with('error-message', 'No file selected');
         }

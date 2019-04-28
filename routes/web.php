@@ -12,13 +12,13 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('books.test');
 });
 
 Route::get('books/search/{search?}/sort/{sort?}', 'BookController@search')
     ->name('books.search');
 
-Route::get('books/export/{export}/file/{file}/sort/{sort?}/search/{search?}', 'BookController@export')
+Route::get('books/export', 'BookController@export')
     ->name('books.export');
 
 

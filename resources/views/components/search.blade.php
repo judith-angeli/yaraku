@@ -1,5 +1,6 @@
-<form method="get" action="{{ route('books.index') }}">
-    <label for="search">{{ $label }} </label>
-    <input type="text" name="search" placeholder="{{ $placeholder }}"/>
-    <input type="hidden" name="sort" value="{{ $sort }}"/>
+<form method="get" action="{{ $action }}">
+    <div class="form-group row">
+        <input class="form-control col-sm-5" type="text" name="search" placeholder="{{ $placeholder }}"/>
+        <button type="submit" class="btn btn-primary ml-1">Search</button>
+    </div>
 </form>

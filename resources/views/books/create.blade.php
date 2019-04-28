@@ -1,19 +1,26 @@
-@extends('layouts.app')
+@extends('components.modal')
 
-@section('meta-title', 'Book Listings')
+@section('modal-title', 'Add book')
+@section('modal-id', 'addBookModal')
 
-@section('content')
+@section('modal-body')
     <form method="post" action="{{ route('books.store') }}">
         @csrf
-        <label for="title">Book title:</label>
-        <input type="text" name="title" />
+        <div class="form-group">
+            <label for="title">Book title:</label>
+            <input class="form-control" type="text" name="title"/>
+        </div>
 
-        <label for="forename">Author forename:</label>
-        <input type="text" name="forename" />
+        <div class="form-group">
+            <label for="forename">Author forename:</label>
+            <input class="form-control" type="text" name="forename"/>
+        </div>
 
-        <label for="surname">Author surname:</label>
-        <input type="text" name="surname" />
+        <div class="form-group">
+            <label for="surname">Author surname:</label>
+            <input class="form-control" type="text" name="surname"/>
+        </div>
 
-        <input type="submit" value="Add" />
+        <input class="btn btn-primary float-right" type="submit" value="Save" />
     </form>
 @endsection

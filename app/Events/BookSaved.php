@@ -18,9 +18,12 @@ class BookSaved
      * @param Book $book
      * @param array $authorData
      */
-    public function __construct(Book $book, $authorData = [])
+    public function __construct(Book $book, $authorForename = '', $authorSurname = '')
     {
         $this->book = $book;
-        $this->authorData = $authorData;
+        $this->authorData = [
+            'forename' => $authorForename,
+            'surname' => $authorSurname
+        ];
     }
 }

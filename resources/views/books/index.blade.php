@@ -1,86 +1,118 @@
 @extends('layouts.app')
-
 @section('meta-title', 'Book Listings')
-
 @section('content')
+
+    <div class="row">
+        <h1>Books</h1>
+    </div>
+
     @if (\Session::has('success-message'))
-        @component('components.alert',
-            [
-                'type' => 'success',
-                'message' => \Session::get('success-message')
-            ]
-        )
+        @component('components.alert', ['type' => 'success', 'message' => \Session::get('success-message')])
         @endcomponent
     @endif
 
-    <a href="/books/create">Add book</a>
+    <div class="row">
+        <div class="col">
+            @component('components.search', [
+                'action' => route('books.index'),
+                'placeholder' => 'Search for a book or author',
+                'sort' => $sort
+            ])
+            @endcomponent
+        </div>
+        <div class="float-right">
+            <a class="btn btn-primary" href="/books/create" data-toggle="modal" data-target="#addBookModal">Add book</a>
+        </div>
+    </div>
 
-    @component('components.search',
-                [
-                    'label' => 'Search:',
-                    'placeholder' => 'Search for a book or author',
-                    'sort' => $sort
-                ]
-            )
-    @endcomponent
+    <hr />
 
-    <a href="/books">Reset</a>
+    <div class="row">
+        Found {{ $books->total() }} results {{ $search ? ' for ' . $search : '' }}
+    </div>
 
-    <form method="get" id="form_sort" action="{{ route(Route::currentRouteName()) }}">
-        <input type="hidden" name="search" value="{{ $search }}"/>
+    <div class="row mt-3">
+        <div class="d-block w-100">
+            <div class="float-left">
+                @component('books.sort', ['search' => $search, 'sort' => $sort])
+                @endcomponent
+            </div>
 
-        <label>Sort by:</label>
+            <div class="float-right mr-5">
+                <div class="row form-inline ">
+                    @component('books.export', ['search' => $search, 'sort' => $sort])
+                    @endcomponent
+                </div>
+            </div>
+        </div>
 
-        <select name="sort" id="sort_by">
-            <option value="title_asc" {{ $sort == 'title_asc' ? 'selected' : '' }}>Title A-Z</option>
-            <option value="title_desc" {{ $sort == 'title_desc' ? 'selected' : '' }}>Title Z-A</option>
-            <option value="forename_asc" {{ $sort == 'forename_asc' ? 'selected' : '' }}>Author A-Z</option>
-            <option value="forename_desc" {{ $sort == 'forename_desc' ? 'selected' : '' }}>Author Z-A</option>
-        </select>
-    </form>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Authors</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            @foreach ($books as $book)
+                <tr>
+                    <td class="col-md-4">{{ $book->title }}</td>
+                    <td class="col-md-4">
+                        @foreach($book->authors as $author)
+                            <div id="b{{$book->id}}_a{{$author->id}}">
+                                <span class="authorName">{{ $author->forename }} {{ $author->surname }}</span>
+                                @component('books.edit_author', ['book' => $book, 'author' => $author])
+                                @endcomponent
+                            </div>
+                        @endforeach
+                    </td>
+                    <td class="col-md-2">
+                        <button class="btn btn-secondary btn-sm btnEditAuthor" data-bookid="{{$book->id}}" data-authorid="{{$author->id}}">
+                            Edit
+                        </button>
 
-    <a href="{{ route('books.export', ['export' => 'title_author', 'file' => 'csv', 'search' => $search, 'sort' => $sort]) }}">Export to CSV</a>
-
-    <script type="text/javascript">
-        // TODO: Move this to external JS file
-        $('#sort_by').change(function () {
-            $("#form_sort").submit();
-        });
-    </script>
-
-    <table>
-        <tr>
-            <th>Title</th>
-            <th>Authors</th>
-            <th>Delete</th>
-        </tr>
-        @foreach ($books as $book)
-            <tr>
-                <td>{{ $book->title }}</td>
-                <td>
-                    @foreach($book->authors as $author)
-                        {{ $author->forename }} {{ $author->surname }}
-                        <form method="post" action="{{ route('authors.update', $author->id) }}">
+                        <form method="post" id="form_delete" class="d-inline" action="{{ route('books.destroy', $book->id) }}">
                             @csrf
-                            @method('PATCH')
-                            <input type="text" name="forename" value="{{ $author->forename }}" />
-                            <input type="text" name="surname" value="{{ $author->surname }}" />
-                            <button>Edit</button>
+                            @method('DELETE')
+                            <button class="btn btn-danger btn-sm">Delete</button>
                         </form>
-                        <br />
-                    @endforeach
-                </td>
-                <td>
-                    <form method="post" action="{{ route('books.destroy', $book->id) }}">
-                        @csrf
-                        @method('DELETE')
-                        <button>Delete</button>
-                    </form>
-                </td>
-            </tr>
-        @endforeach
-    </table>
+                    </td>
+                </tr>
+            @endforeach
+        </table>
+    </div>
 
     {{ $books->appends(request()->except('page'))->links() }}
 
+    @component('books.create')
+    @endcomponent
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#sort_by').change(function () {
+                $("#form_sort").submit();
+            });
+        });
+
+        $('.btnEditAuthor').on('click', function() {
+            let bookId = $(this).data('bookid');
+            let authorId = $(this).data('authorid');
+            let editContainer = "#b" + bookId + "_a" + authorId;
+
+            $(".frm-edit-author").hide();
+            $(editContainer + " form").show();
+            $(editContainer + " span.authorName").hide();
+        });
+
+        $('.btnCancelEditAuthor').on('click', function() {
+            event.preventDefault();
+
+            $(".frm-edit-author").hide();
+            $("span.authorName").show();
+
+            return false;
+        });
+    </script>
+
 @endsection
+

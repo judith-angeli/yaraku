@@ -20,31 +20,6 @@ class Book extends Model
     }
 
     /**
-     * @param array $data
-     * @return bool
-     * */
-    public function addBook($data = []) : bool
-    {
-        if ($this->where('title', $data['title'])->doesntExist()) {
-
-            $this->title = $data['title'];
-
-            $this->save();
-
-            $authorData = [
-                'forename' => $data['forename'],
-                'surname' => $data['surname']
-            ];
-
-            event(new BookSaved($this, $authorData));
-
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
      * @param string $keyword
      *
      * @return Illuminate\Database\Eloquent\Builder $results
