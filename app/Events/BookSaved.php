@@ -3,7 +3,7 @@
 namespace App\Events;
 
 use Illuminate\Queue\SerializesModels;
-use App\Http\Models\Book;
+use App\Models\Book;
 
 class BookSaved
 {

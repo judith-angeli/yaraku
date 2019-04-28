@@ -20,7 +20,7 @@ class CreateAuthorBookTable extends Migration
             $table->foreign('author_id')->references('id')->on('authors');
 
             $table->integer('book_id')->unsigned();
-            $table->foreign('book_id')->references('id')->on('books');
+            $table->foreign('book_id')->references('id')->on('books')->onDelete('cascade');
         });
     }
 

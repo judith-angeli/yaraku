@@ -3,7 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\BookSaved;
-use App\Http\Models\Author;
+use App\Models\Author;
 
 class CreateAuthorIfNotExists
 {
