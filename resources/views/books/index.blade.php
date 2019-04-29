@@ -6,15 +6,9 @@
         <h1>Books</h1>
     </div>
 
-
     @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
+        @component('components.alert', ['type' => 'danger', 'message' => $errors->all()])
+        @endcomponent
     @endif
 
     @if (\Session::has('success-message'))
