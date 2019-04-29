@@ -5,13 +5,12 @@ class ExportFileHelper
 {
     private $exporter;
 
-    public function __construct($file, $toExport, $dataBuilder, $filename = 'file')
+    public function __construct($file, $data, $filename = 'file', $fields = [])
     {
-        $data = $this->prepareData($toExport, $dataBuilder);
-
         switch ($file) {
             case 'csv':
                 $this->exporter = new ExportCsvHelper();
+                $this->exporter->setFields($fields);
                 break;
 
             case 'xml':
@@ -23,31 +22,7 @@ class ExportFileHelper
         }
 
         $this->exporter->setFilename($filename);
-        $this->exporter->setData($data['data'], $data['fields']);
-    }
-
-    public function prepareData($toExport, $dataBuilder)
-    {
-        switch ($toExport) {
-            case 'title':
-                $fields = ['title'];
-                break;
-
-            case 'author':
-                $fields = ['forename', 'surname'];
-                break;
-
-            case 'title_author':
-            default:
-                $fields = ['title', 'forename', 'surname'];
-                break;
-        }
-
-        $data = $dataBuilder->select($fields)
-            ->get()
-            ->toArray();
-
-        return ['data' => $data, 'fields' => $fields];
+        $this->exporter->setData($data);
     }
 
     public function export()

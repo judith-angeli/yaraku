@@ -5,6 +5,7 @@ class ExportCsvHelper implements ExportFileInterface
 {
     private $data;
     private $filename;
+    private $fields;
 
     public function setFilename($filename)
     {
@@ -16,15 +17,25 @@ class ExportCsvHelper implements ExportFileInterface
         return $this->filename;
     }
 
-    public function setData($data, $headers = [])
+    public function setData($data)
     {
-        array_unshift($data, $headers);
+        array_unshift($data, $this->getFields());
         $this->data = $data;
     }
 
     public function getData()
     {
         return $this->data;
+    }
+
+    public function setFields($fields)
+    {
+        $this->fields = $fields;
+    }
+
+    public function getFields()
+    {
+        return $this->fields;
     }
 
     public function export()

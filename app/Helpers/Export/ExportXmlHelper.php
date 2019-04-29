@@ -16,16 +16,16 @@ class ExportXmlHelper implements ExportFileInterface
         return $this->filename;
     }
 
-    public function setData($data, $headers = [])
+    public function setData($data)
     {
         $xml = new \SimpleXMLElement('<root/>');
-        $books = $xml->addChild('books');
+        $parent = $xml->addChild('books');
 
         foreach ($data as $value) {
-            $book = $books->addChild('book');
+            $child = $parent->addChild('book');
 
             foreach ($value as $k => $v) {
-                $book->addChild($k, $v);
+                $child->addChild($k, $v);
             }
         }
 

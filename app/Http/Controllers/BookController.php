@@ -20,8 +20,8 @@ class BookController extends Controller
      */
     public function index(Request $request)
     {
-        $search = $request->get('search') ?? '';
-        $sort = $request->get('sort') ?? 'title_asc';
+        $search = $request->input('search', '');
+        $sort = $request->input('sort', 'title_asc');
 
         $results = $this->search($search, $sort)
                         ->paginate(self::ITEMS_PER_PAGE);
@@ -97,7 +97,7 @@ class BookController extends Controller
 
         event(new BookSaved($book, $request->get('forename'), $request->get('surname'), $authorId));
 
-        return redirect(route('books.index'))->with('success-message', $book->title . ' has been updated');
+        return redirect(url()->previous())->with('success-message', $book->title . ' has been updated');
     }
 
     /**
@@ -121,7 +121,7 @@ class BookController extends Controller
      *
      * @return Builder
     */
-    public function search(string $search, string $sort)
+    public function search(?string $search, string $sort = 'title_asc')
     {
         $books = new Book();
 
@@ -139,10 +139,15 @@ class BookController extends Controller
     */
     public function export(Request $request)
     {
-        $fileType = $request->get('fileType') ?? '';
-        $toExport = $request->get('toExport') ?? '';
-        $sort = $request->get('sort') ?? '';
-        $search = $request->get('search') ?? '';
+        $request->validate([
+            'fileType' => 'required',
+            'toExport' => 'required'
+        ]);
+
+        $fileType = $request->input('fileType', '');
+        $toExport = $request->input('toExport', '');
+        $sort = $request->input('sort', 'title_asc');
+        $search = $request->input('search', '');
 
         if (!$fileType) {
             return redirect(route('books.index'))->with('error-message', 'No file selected');
@@ -150,9 +155,13 @@ class BookController extends Controller
 
         $dataBuilder = $this->search($search, $sort);
 
-        $exportHelper = new ExportFileHelper($fileType, $toExport, $dataBuilder, 'books');
-        $exportHelper->export();
+        $book = new Book();
+        $fields = $book->getFields($toExport);
+        $data = $dataBuilder->select($fields)
+            ->get()
+            ->toArray();
 
-        return redirect(route(Route::currentRouteName()));
+        $exportHelper = new ExportFileHelper($fileType, $data, 'books', $fields);
+        $exportHelper->export();
     }
 }

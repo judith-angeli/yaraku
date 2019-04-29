@@ -25,9 +25,9 @@ class Book extends Model
      *
      * @return Illuminate\Database\Eloquent\Builder $results
     * */
-    public function getByTitleOrAuthor(string $keyword = '')
+    public function getByTitleOrAuthor(?string $keyword = '')
     {
-        $results = $this->select('books.id', 'book_id', 'author_id', 'title', 'forename', 'surname')
+        $results = $this->select($this->getFields())
                         ->join('author_book', 'books.id', '=', 'author_book.book_id')
                         ->join('authors', 'authors.id', '=', 'author_book.author_id');
 
@@ -60,5 +60,28 @@ class Book extends Model
         }
 
         return $builder->orderBy($sortBy, $sortOrder);
+    }
+
+    public function getFields($keyword = '')
+    {
+        switch ($keyword) {
+            case 'title':
+                $fields = ['title'];
+                break;
+
+            case 'author':
+                $fields = ['forename', 'surname'];
+                break;
+
+            case 'title_author':
+                $fields = ['title', 'forename', 'surname'];
+                break;
+
+            default:
+                $fields = ['books.id', 'book_id', 'author_id', 'title', 'forename', 'surname'];
+                break;
+        }
+
+        return $fields;
     }
 }
