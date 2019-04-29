@@ -5,7 +5,7 @@ class ExportFileHelper
 {
     private $exporter;
 
-    public function __construct($file, $toExport, $dataBuilder, $filename)
+    public function __construct($file, $toExport, $dataBuilder, $filename = 'file')
     {
         $data = $this->prepareData($toExport, $dataBuilder);
 

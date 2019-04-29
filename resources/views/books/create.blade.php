@@ -12,12 +12,12 @@
         </div>
 
         <div class="form-group">
-            <label for="forename">Author forename:</label>
+            <label for="forename">Author first name:</label>
             <input class="form-control" type="text" name="forename"/>
         </div>
 
         <div class="form-group">
-            <label for="surname">Author surname:</label>
+            <label for="surname">Author last name:</label>
             <input class="form-control" type="text" name="surname"/>
         </div>
 

@@ -32,6 +32,10 @@ class CreateAuthorIfNotExists
 
         $author->save();
 
-        $event->book->authors()->attach($author);
+        if ($event->authorId) {
+            $event->book->authors()->updateExistingPivot($event->authorId, ['author_id' => $author->id, 'book_id' => $event->book->id]);
+        } else {
+            $event->book->authors()->attach($author);
+        }
     }
 }

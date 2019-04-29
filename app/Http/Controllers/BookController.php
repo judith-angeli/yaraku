@@ -54,7 +54,6 @@ class BookController extends Controller
 
         $book = new Book();
         $book->title = $request->get('title');
-
         $book->save();
 
         event(new BookSaved($book, $request->get('forename'), $request->get('surname')));
@@ -93,7 +92,12 @@ class BookController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $book = Book::find($id);
+        $authorId = $request->get('authorId');
+
+        event(new BookSaved($book, $request->get('forename'), $request->get('surname'), $authorId));
+
+        return redirect(route('books.index'))->with('success-message', $book->title . ' has been updated');
     }
 
     /**
@@ -129,27 +133,24 @@ class BookController extends Controller
     }
 
     /**
-     * @param string $toExport = title_author | title | author
-     * @param string $file = csv | xml
-     * @param string $sort
-     * @param string $search
+     * @param Request $request
      *
      * @return
     */
     public function export(Request $request)
     {
-        $file = $request->get('file') ?? '';
+        $fileType = $request->get('fileType') ?? '';
         $toExport = $request->get('toExport') ?? '';
         $sort = $request->get('sort') ?? '';
         $search = $request->get('search') ?? '';
 
-        if (!$file) {
+        if (!$fileType) {
             return redirect(route('books.index'))->with('error-message', 'No file selected');
         }
 
         $dataBuilder = $this->search($search, $sort);
 
-        $exportHelper = new ExportFileHelper($file, $toExport, $dataBuilder, 'books');
+        $exportHelper = new ExportFileHelper($fileType, $toExport, $dataBuilder, 'books');
         $exportHelper->export();
 
         return redirect(route(Route::currentRouteName()));

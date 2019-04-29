@@ -21,7 +21,7 @@
             @endcomponent
         </div>
         <div class="float-right">
-            <a class="btn btn-primary" href="/books/create" data-toggle="modal" data-target="#addBookModal">Add book</a>
+            <a class="btn btn-primary" href="{{route('books.create')}}" data-toggle="modal" data-target="#addBookModal">Add book</a>
         </div>
     </div>
 
@@ -46,73 +46,12 @@
             </div>
         </div>
 
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Authors</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            @foreach ($books as $book)
-                <tr>
-                    <td class="col-md-4">{{ $book->title }}</td>
-                    <td class="col-md-4">
-                        @foreach($book->authors as $author)
-                            <div id="b{{$book->id}}_a{{$author->id}}">
-                                <span class="authorName">{{ $author->forename }} {{ $author->surname }}</span>
-                                @component('books.edit_author', ['book' => $book, 'author' => $author])
-                                @endcomponent
-                            </div>
-                        @endforeach
-                    </td>
-                    <td class="col-md-2">
-                        <button class="btn btn-secondary btn-sm btnEditAuthor" data-bookid="{{$book->id}}" data-authorid="{{$author->id}}">
-                            Edit
-                        </button>
-
-                        <form method="post" id="form_delete" class="d-inline" action="{{ route('books.destroy', $book->id) }}">
-                            @csrf
-                            @method('DELETE')
-                            <button class="btn btn-danger btn-sm">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-            @endforeach
-        </table>
+        @component('books.listings', ['books' => $books])
+        @endcomponent
     </div>
 
     {{ $books->appends(request()->except('page'))->links() }}
 
     @component('books.create')
     @endcomponent
-
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $('#sort_by').change(function () {
-                $("#form_sort").submit();
-            });
-        });
-
-        $('.btnEditAuthor').on('click', function() {
-            let bookId = $(this).data('bookid');
-            let authorId = $(this).data('authorid');
-            let editContainer = "#b" + bookId + "_a" + authorId;
-
-            $(".frm-edit-author").hide();
-            $(editContainer + " form").show();
-            $(editContainer + " span.authorName").hide();
-        });
-
-        $('.btnCancelEditAuthor').on('click', function() {
-            event.preventDefault();
-
-            $(".frm-edit-author").hide();
-            $("span.authorName").show();
-
-            return false;
-        });
-    </script>
-
 @endsection
-

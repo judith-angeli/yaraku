@@ -13,6 +13,7 @@ class Book extends Model
 
     /**
     * a book can have multiple authors
+     * e.g. Let It Snow: Three Holiday Romances by John Green, Lauren Myracle, and Maureen Johnson
     */
     public function authors()
     {

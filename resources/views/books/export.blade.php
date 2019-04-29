@@ -3,7 +3,7 @@
     <input type="hidden" name="search" value="{{ $search }}"/>
     <input type="hidden" name="sort" value="{{ $sort }}"/>
 
-    <select class="custom-select mr-1" name="file">
+    <select class="custom-select mr-1" name="fileType">
         <option value="csv">CSV</option>
         <option value="xml">XML</option>
     </select>
