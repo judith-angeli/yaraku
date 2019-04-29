@@ -25,8 +25,11 @@ $(document).ready(function() {
     $('.btnDelete').on('click', function() {
         event.preventDefault();
 
-        if (confirm("Are you sure you want to delete this book")) {
-            $("#form_delete").submit();
+        let bookTitle = $(this).data('booktitle');
+
+        if (confirm("Are you sure you want to delete \"" + bookTitle + "\"?")) {
+            let bookId = $(this).data('bookid');
+            $("#form_delete_" + bookId).submit();
 
         }
 

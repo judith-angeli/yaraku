@@ -113,9 +113,11 @@ $(document).ready(function () {
   });
   $('.btnDelete').on('click', function () {
     event.preventDefault();
+    var bookTitle = $(this).data('booktitle');
 
-    if (confirm("Are you sure you want to delete this book")) {
-      $("#form_delete").submit();
+    if (confirm("Are you sure you want to delete \"" + bookTitle + "\"?")) {
+      var bookId = $(this).data('bookid');
+      $("#form_delete_" + bookId).submit();
     }
 
     return false;

@@ -12,7 +12,7 @@
             <td class="col-md-4">
                 @foreach($book->authors as $author)
                     <div id="b{{$book->id}}_a{{$author->id}}">
-                        <span class="authorName">{{ $author->forename }} {{ $author->surname }}</span>
+                        <span class="authorName">{{ ucfirst($author->forename) }} {{ ucfirst($author->surname) }}</span>
                         @component('books.edit_author', ['book' => $book, 'author' => $author])
                         @endcomponent
                     </div>
@@ -23,10 +23,11 @@
                     Edit
                 </button>
 
-                <form method="post" id="form_delete" class="d-inline" action="{{ route('books.destroy', $book->id) }}">
+                <form method="post" id="form_delete_{{ $book->id }}" class="d-inline" action="{{ route('books.destroy', $book->id) }}">
                     @csrf
                     @method('DELETE')
-                    <button class="btn btn-danger btn-sm btnDelete">Delete</button>
+                    <button class="btn btn-danger btn-sm btnDelete" data-bookid="{{ $book->id }}"
+                            data-booktitle="{{ $book->title }}">Delete</button>
                 </form>
             </td>
         </tr>

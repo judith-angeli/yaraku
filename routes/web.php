@@ -11,9 +11,7 @@
 |
 */
 
-Route::get('/', function () {
-    return view('books.test');
-});
+Route::get('/', 'BookController@index');
 
 Route::get('books/search/{search?}/sort/{sort?}', 'BookController@search')
     ->name('books.search');
