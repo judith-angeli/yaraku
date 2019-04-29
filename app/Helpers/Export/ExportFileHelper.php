@@ -5,7 +5,13 @@ class ExportFileHelper
 {
     private $exporter;
 
-    public function __construct($file, $data, $filename = 'file', $fields = [])
+    /**
+     * @param string $file [csv|xml]
+     * @param array $data
+     * @param string $filename
+     * @param array $fields
+    */
+    public function __construct(string $file, array $data, string $filename = 'file', array $fields = [])
     {
         switch ($file) {
             case 'csv':

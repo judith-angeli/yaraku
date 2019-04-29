@@ -13,12 +13,14 @@
 
 Route::get('/', 'BookController@index');
 
-Route::get('books/search/{search?}/sort/{sort?}', 'BookController@search')
+Route::get('books/search', 'BookController@search')
     ->name('books.search');
 
 Route::get('books/export', 'BookController@export')
     ->name('books.export');
 
+Route::resource('books', 'BookController')->only([
+    'index', 'store', 'destroy', 'update'
+]);
 
-Route::resource('books', 'BookController');
 Route::resource('authors', 'AuthorController');

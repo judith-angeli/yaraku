@@ -6,6 +6,17 @@
         <h1>Books</h1>
     </div>
 
+
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     @if (\Session::has('success-message'))
         @component('components.alert', ['type' => 'success', 'message' => \Session::get('success-message')])
         @endcomponent
@@ -21,7 +32,7 @@
             @endcomponent
         </div>
         <div class="float-right">
-            <a class="btn btn-primary" href="{{route('books.create')}}" data-toggle="modal" data-target="#addBookModal">Add book</a>
+            <button class="btn btn-primary" data-toggle="modal" data-target="#addBookModal">Add book</button>
         </div>
     </div>
 

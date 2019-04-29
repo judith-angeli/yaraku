@@ -12,8 +12,11 @@ class Book extends Model
     const SORTABLE_FIELDS = ['title', 'forename', 'surname', 'author'];
 
     /**
-    * a book can have multiple authors
+     * a book can have multiple authors
      * e.g. Let It Snow: Three Holiday Romances by John Green, Lauren Myracle, and Maureen Johnson
+     *
+     * The current implementation is many books to one author
+     * Many-to-many may be implemented in next iterations
     */
     public function authors()
     {
@@ -21,8 +24,10 @@ class Book extends Model
     }
 
     /**
-     * @param string $keyword
+     * Searches for a keyword in titles or authors table
+     * if no keyword is passed, returns all book data
      *
+     * @param string $keyword
      * @return Illuminate\Database\Eloquent\Builder $results
     * */
     public function getByTitleOrAuthor(?string $keyword = '')
@@ -46,7 +51,6 @@ class Book extends Model
      * @param Builder $builder
      * @param string $sortBy
      * @param string $sortOrder
-     *
      * @return Builder $results
      * */
     public function sort(Builder $builder, $sortBy = 'title', $sortOrder = 'ASC')
@@ -62,7 +66,13 @@ class Book extends Model
         return $builder->orderBy($sortBy, $sortOrder);
     }
 
-    public function getFields($keyword = '')
+    /**
+     * Get fields by keyword
+     *
+     * @param string $keyword
+     * @return array $fields
+    */
+    public function getFields($keyword = '') : array
     {
         switch ($keyword) {
             case 'title':

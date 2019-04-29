@@ -14,7 +14,7 @@ class BookSaved
     public $authorId;
 
     /**
-     * Create a new event instance.
+     * Event for book creation/update
      *
      * @param Book $book
      * @param array $authorData

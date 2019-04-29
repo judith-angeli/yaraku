@@ -6,16 +6,25 @@ class ExportXmlHelper implements ExportFileInterface
     private $data;
     private $filename;
 
+    /**
+     * @param string $filename
+     */
     public function setFilename($filename)
     {
         $this->filename = $filename;
     }
 
+    /**
+     * @return string
+     */
     public function getFilename()
     {
         return $this->filename;
     }
 
+    /**
+     * @param array $data
+     */
     public function setData($data)
     {
         $xml = new \SimpleXMLElement('<root/>');
@@ -32,11 +41,17 @@ class ExportXmlHelper implements ExportFileInterface
         $this->data = $xml->asXML();
     }
 
+    /**
+     * @return array
+     */
     public function getData()
     {
         return $this->data;
     }
 
+    /**
+     * Exports data to an XML file
+     */
     public function export()
     {
         header('Content-type: text/xml');

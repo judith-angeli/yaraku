@@ -76,7 +76,6 @@ class AuthorController extends Controller
 
         $author->save();
 
-        // @TODO change redirect
         return redirect("books")->with('success-message', 'Author name has been updated');
     }
 

@@ -18,10 +18,10 @@ class CreateAuthorIfNotExists
     }
 
     /**
-     * Handle the event.
+     * Inserts an author if it doesn't exist in authors table
+     * then adds/updates `author_book` pivot table to create the relationship
      *
-     * @param  BookSaved  $event
-     * @return void
+     * @param BookSaved $event
      */
     public function handle(BookSaved $event)
     {

@@ -30,17 +30,7 @@ class BookController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        return view('books.create');
-    }
-
-    /**
-     * Store a newly created resource in storage.
+     * Stores a book and its author
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -62,29 +52,7 @@ class BookController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
+     * Update a book's author
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
@@ -92,6 +60,10 @@ class BookController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'forename' => 'required'
+        ]);
+
         $book = Book::find($id);
         $authorId = $request->get('authorId');
 
@@ -101,7 +73,7 @@ class BookController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Deletes a book
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -116,6 +88,8 @@ class BookController extends Controller
     }
 
     /**
+     * Search for a book or author
+     *
      * @param string $search
      * @param string $sort
      *
@@ -133,9 +107,9 @@ class BookController extends Controller
     }
 
     /**
-     * @param Request $request
+     * Exports current list to a file (e.g. CSV, XML)
      *
-     * @return
+     * @param Request $request
     */
     public function export(Request $request)
     {
@@ -144,14 +118,10 @@ class BookController extends Controller
             'toExport' => 'required'
         ]);
 
-        $fileType = $request->input('fileType', '');
-        $toExport = $request->input('toExport', '');
+        $fileType = $request->input('fileType');
+        $toExport = $request->input('toExport');
         $sort = $request->input('sort', 'title_asc');
         $search = $request->input('search', '');
-
-        if (!$fileType) {
-            return redirect(route('books.index'))->with('error-message', 'No file selected');
-        }
 
         $dataBuilder = $this->search($search, $sort);
 

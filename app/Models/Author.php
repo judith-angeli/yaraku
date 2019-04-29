@@ -12,8 +12,8 @@ class Author extends Model
     ];
 
     /**
-     * an author can have multiple books
-     */ 
+     * An author can have multiple books
+     */
     public function books()
     {
         return $this->belongsToMany(Book::class);
