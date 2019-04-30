@@ -70,6 +70,6 @@ class ExportCsvHelper implements ExportFileInterface
             fputcsv($f, $row);
         }
 
-        exit;
+        fclose($f);
     }
 }

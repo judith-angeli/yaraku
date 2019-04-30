@@ -8,16 +8,6 @@ use App\Models\Author;
 class CreateAuthorIfNotExists
 {
     /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
-
-    /**
      * Inserts an author if it doesn't exist in authors table
      * then adds/updates `author_book` pivot table to create the relationship
      *

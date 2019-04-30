@@ -59,6 +59,5 @@ class ExportXmlHelper implements ExportFileInterface
         header('Content-Disposition: attachment; filename="' . $this->getFilename() . '.xml"');
 
         echo $this->getData();
-        exit;
     }
 }

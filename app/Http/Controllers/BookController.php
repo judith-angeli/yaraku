@@ -95,11 +95,16 @@ class BookController extends Controller
      *
      * @return Builder
     */
-    public function search(?string $search, string $sort = 'title_asc')
+    public function search(?string $search, ?string $sort = 'title_asc')
     {
         $books = new Book();
 
-        list($sortBy, $sortOrder) = explode('_', $sort);
+        try {
+            list($sortBy, $sortOrder) = explode('_', $sort);
+        } catch (\ErrorException $e) {
+            $sortBy = 'title';
+            $sortOrder = 'asc';
+        }
 
         $results = $books->getByTitleOrAuthor($search);
 
@@ -110,6 +115,7 @@ class BookController extends Controller
      * Exports current list to a file (e.g. CSV, XML)
      *
      * @param Request $request
+     * @return response
     */
     public function export(Request $request)
     {
@@ -132,6 +138,11 @@ class BookController extends Controller
             ->toArray();
 
         $exportHelper = new ExportFileHelper($fileType, $data, 'books', $fields);
-        $exportHelper->export();
+
+        return response()->stream(
+            function () use ($exportHelper) : void {
+                $exportHelper->export();
+            }
+        );
     }
 }

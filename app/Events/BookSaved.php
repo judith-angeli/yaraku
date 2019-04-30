@@ -17,7 +17,9 @@ class BookSaved
      * Event for book creation/update
      *
      * @param Book $book
-     * @param array $authorData
+     * @param string $authorForename
+     * @param string $authorForename
+     * @param int $authorId
      */
     public function __construct(Book $book, $authorForename = '', $authorSurname = '', $authorId = null)
     {

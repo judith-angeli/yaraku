@@ -1,5 +1,11 @@
 @extends('layouts.app')
 @section('meta-title', 'Book Listings')
+
+@section('javascripts')
+    @parent
+    <script src="{{ asset('js/book.js') }}"></script>
+@endsection
+
 @section('content')
 
     <div class="row">
@@ -7,23 +13,20 @@
     </div>
 
     @if ($errors->any())
-        @component('components.alert', ['type' => 'danger', 'message' => $errors->all()])
-        @endcomponent
+        @include('components.alert', ['type' => 'danger', 'message' => $errors->all()])
     @endif
 
     @if (\Session::has('success-message'))
-        @component('components.alert', ['type' => 'success', 'message' => \Session::get('success-message')])
-        @endcomponent
+        @include('components.alert', ['type' => 'success', 'message' => \Session::get('success-message')])
     @endif
 
     <div class="row">
         <div class="col">
-            @component('components.search', [
+            @include('components.search', [
                 'action' => route('books.index'),
                 'placeholder' => 'Search for a book or author',
                 'sort' => $sort
             ])
-            @endcomponent
         </div>
         <div class="float-right">
             <button class="btn btn-primary" data-toggle="modal" data-target="#addBookModal">Add book</button>
@@ -39,24 +42,20 @@
     <div class="row mt-3">
         <div class="d-block w-100">
             <div class="float-left">
-                @component('books.sort', ['search' => $search, 'sort' => $sort])
-                @endcomponent
+                @include('books.sort', ['search' => $search, 'sort' => $sort])
             </div>
 
             <div class="float-right mr-5">
                 <div class="row form-inline ">
-                    @component('books.export', ['search' => $search, 'sort' => $sort])
-                    @endcomponent
+                    @include('books.export', ['search' => $search, 'sort' => $sort])
                 </div>
             </div>
         </div>
 
-        @component('books.listings', ['books' => $books])
-        @endcomponent
+        @include('books.listings', ['books' => $books])
     </div>
 
     {{ $books->appends(request()->except('page'))->links() }}
 
-    @component('books.create')
-    @endcomponent
+    @include('books.create')
 @endsection

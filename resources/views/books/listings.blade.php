@@ -13,8 +13,7 @@
                 @foreach($book->authors as $author)
                     <div id="b{{$book->id}}_a{{$author->id}}">
                         <span class="authorName">{{ ucfirst($author->forename) }} {{ ucfirst($author->surname) }}</span>
-                        @component('books.edit_author', ['book' => $book, 'author' => $author])
-                        @endcomponent
+                        @include('books.edit_author', ['book' => $book, 'author' => $author])
                     </div>
                 @endforeach
             </td>
