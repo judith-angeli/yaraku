@@ -9,6 +9,7 @@ $(document).ready(function() {
         let editContainer = "#b" + bookId + "_a" + authorId;
 
         $(".frm-edit-author").hide();
+        $("span.authorName").show();
         $(editContainer + " form").show();
         $(editContainer + " span.authorName").hide();
     });
