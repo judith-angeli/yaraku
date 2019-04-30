@@ -4,5 +4,5 @@
 - Create <code>.env</code> file in the root directory and update database credentials
 - Generate a key <code>php artisan key:generate</code>
 - Run <code>php artisan migrate</code>
-- Run <code>php artisan db:seed --class=BooksTableSeeder</code> to auto populate the database tables
+- Optional: Run <code>php artisan db:seed --class=BooksTableSeeder</code> to pre-populate the database tables
 - Visit '/' or '/books'
