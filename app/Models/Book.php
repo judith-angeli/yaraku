@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class Book extends Model
 {
     protected $fillable = ['title'];
-    const SORTABLE_FIELDS = ['title', 'forename', 'surname', 'author'];
+    const SORTABLE_FIELDS = ['title', 'forename', 'surname'];
 
     /**
      * a book can have multiple authors
