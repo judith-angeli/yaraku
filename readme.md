@@ -6,3 +6,9 @@
 - Run <code>php artisan migrate</code>
 - Optional: Run <code>php artisan db:seed --class=BooksTableSeeder</code> to pre-populate the database tables
 - Visit '/' or '/books'
+
+## Notes
+- I used Laravel Homestead in my setup
+    - PHP Version: 7.3.1
+    - Laravel version: 5.8
+    - Mysql: 5.7.25
