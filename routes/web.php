@@ -13,14 +13,9 @@
 
 Route::get('/', 'BookController@index');
 
-Route::get('books/search', 'BookController@search')
-    ->name('books.search');
-
 Route::get('books/export', 'BookController@export')
     ->name('books.export');
 
 Route::resource('books', 'BookController')->only([
     'index', 'store', 'destroy', 'update'
 ]);
-
-Route::resource('authors', 'AuthorController');
