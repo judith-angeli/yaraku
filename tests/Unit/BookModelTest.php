@@ -12,27 +12,12 @@ class BookModelTest extends TestCase
 {
     use RefreshDatabase;
 
-    public $Books;
-    public $Authors;
-
-    public function setUp() : void
-    {
-        parent::setUp();
-    }
-
-    public function tearDown(): void
-    {
-        parent::tearDown();
-
-    }
-
     public function testGetAllBooks()
     {
         $this->seed('BooksTableSeeder');
         $book = new Book();
         $this->assertInstanceOf(Builder::class, $book->getByTitleOrAuthor());
         $this->assertEquals(20, $book->getByTitleOrAuthor()->get()->count());
-
     }
 
     public function testGetByTitleOrAuthor()
