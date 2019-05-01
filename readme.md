@@ -1,5 +1,6 @@
 ## Setup
-- Clone the repository: <code>git clone https://github.com/judith-angeli/yaraku</code>
+- Clone the repository: <code>git clone https://github.com/judith-angeli/yaraku.git</code>
+- <code>cd yaraku</code>
 - Run <code>composer install</code>
 - Create <code>.env</code> file in the root directory and update database credentials
 - Generate a key <code>php artisan key:generate</code>
@@ -9,6 +10,7 @@
 
 ## Notes
 - I used Laravel Homestead in my setup
-    - PHP Version: 7.3.1
-    - Laravel version: 5.8
+    - PHP: 7.3.1
+    - Laravel: 5.8
     - Mysql: 5.7.25
+    - PHPUnit: 7.5.9
